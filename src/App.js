@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import { Component } from "react";
+class App extends Component {
+  constructor()
+  {
+    super();
+    this.state=
+    {
+      People:[]
+    }
+  }
+  componentDidMount()
+  {
+    fetch("https://jsonplaceholder.typicode.com/users")
+    .then((response)=>response.json())
+    .then((users)=>this.setState(()=>{return {People:users}},()=>console.log(this.state.People)));
+  }
+render(){
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input className="search-box" type="search" placeholder="Search people" onChange={(event)=>
+        {
+            const searchstr=event.target.value.toLowerCase();
+            const filteredPeople= this.state.People.filter((people)=>
+            {
+                  return (people.name.toLowerCase().includes(searchstr))
+            });
+            this.setState(()=>{return{People:filteredPeople}})
+        }}/>
+      {
+        this.state.People.map((People)=>
+        {
+          return(<h1 key={People.id}>{People.name}</h1>)
+        })
+      }
     </div>
   );
 }
-
+}
 export default App;
