@@ -5,7 +5,8 @@ class App extends Component {
     super();
     this.state=
     {
-      People:[]
+      People:[],
+      searchstr:''
     }
   }
   componentDidMount()
@@ -15,19 +16,20 @@ class App extends Component {
     .then((users)=>this.setState(()=>{return {People:users}},()=>console.log(this.state.People)));
   }
 render(){
+  const filteredPeople= this.state.People.filter((people)=>
+  {
+        return (people.name.toLowerCase().includes(this.state.searchstr))
+  });
   return (
     <div className="App">
       <input className="search-box" type="search" placeholder="Search people" onChange={(event)=>
         {
+            console.log(event.target.value)
             const searchstr=event.target.value.toLowerCase();
-            const filteredPeople= this.state.People.filter((people)=>
-            {
-                  return (people.name.toLowerCase().includes(searchstr))
-            });
-            this.setState(()=>{return{People:filteredPeople}})
+            this.setState(()=>{return{searchstr}})
         }}/>
       {
-        this.state.People.map((People)=>
+        filteredPeople.map((People)=>
         {
           return(<h1 key={People.id}>{People.name}</h1>)
         })
